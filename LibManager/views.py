@@ -45,7 +45,46 @@ def deleteBook(request):
     else:
         return render(request, 'deleteBook.html')
 
+def searchUpdateBook(request):
+    if request.method != 'POST':
+        return render(request, 'searchUpdateBook.html')
+    
+    query = request.POST['query']
+    books = Book.objects.filter(Q(title__icontains=query) | Q(author__icontains=query) | Q(id=query))
 
+    if len(books) == 1:
+        return redirect('updateBook', book_id=books[0].id)
+    
+    if len(books) > 1:
+        context = {
+        'title': 'Multiple Books found',
+        'message': 'Please be more specific in your search.'
+        }
+        return render(request, 'ErrorHandler.html', context)
+
+    context = {
+    'title': 'Book not found',
+    'message': 'Please enter a valid book title or author name.'
+    }
+    return render(request, 'ErrorHandler.html', context)
+        
+    
+
+def updateBook(request, book_id):
+    book = Book.objects.get(pk=book_id)
+    if request.method != 'POST':
+        context = {'book': book}
+    
+        return render(request, 'updateBook.html', context)
+    
+    book.title = request.POST.get('title')
+    book.author = request.POST.get('author')
+    book.genre = request.POST.get('genre')
+    book.copies = request.POST.get('copies')
+    
+    book.save(force_update=True)
+    
+    return redirect('bookView', book_id=book_id)
 
 def searchBook(request):
     if request.method == 'POST':
