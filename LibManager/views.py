@@ -96,7 +96,7 @@ def searchBook(request):
             return redirect('bookView', book_id=books[0].id)
         elif len(books) > 1:
             # Display a list of books
-            context = {'books': books}
+            context = {'book_list': books}
             return render(request, 'bookList.html', context)
         else:
             context = {
