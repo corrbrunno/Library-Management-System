@@ -24,7 +24,14 @@
             </thead>
             <tbody>
                 {% for book in book_list %}
-git 
+                <tr>
+                    <td>{{ book.title }}</td>
+                    <td>{{ book.author }}</td>
+                    <td>{{ book.genre }}</td>
+                    <td><a href="{% url 'bookView' book_id=book.id %}" class="view-button">View</a></td>
+                    <td><a href="{% url 'updateBook' book_id=book.id %}" class="view-button">Update</a></td>
+                    <td><a href="{% url 'borrow' book_id=book.id %}" class="view-button">Borrow</a></td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>
