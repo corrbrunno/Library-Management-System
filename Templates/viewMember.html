@@ -1,0 +1,72 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add member</title>
+    <link rel="stylesheet" href="{% static 'css/viewBook.css' %}">
+    <link rel="stylesheet" href="{% static 'css/bookList.css' %}">
+
+    {% csrf_token %}
+</head>
+<body style="height: 100%;">
+    {% include 'header.html' %}
+
+    <div class="book-details-container">
+        <div class="book-details">
+            <h1 class="book-title">{{ member.name }}</h1>
+            <div class="book-info">
+                <p><strong>Identifier:</strong> {{ member.identifier }}</p>
+            </div>
+            <a href="{% url 'home' %}" class="home-button">Go Home</a>
+        </div>
+    </div>
+            <table>
+            <thead>
+                <tr>
+                    <th>Books Borrowed</th>
+                    <th>Borrowed Date</th>
+                    <th>Book Title</th>
+                    <th>Returned Date</th>
+                    <th>View</th>
+                    <th>Update</th>
+                    <th>Returned</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for loan in member_loans %}
+                <tr>
+                    <td>{{ loan.books_borrowed }}</td>
+                    <td>{{ loan.borrowed_date }}</td>
+                    <td>{{ loan.book.title }}</td>
+                {% if loan.is_active %}
+                    <td>Not yet Returned</td>
+                {% else %}
+                    <td>{{ loan.returned_date}}</td>
+                {% endif %}
+                    <td><a href="{% url 'bookView' book_id=loan.book.id %}" class="view-button">View</a></td>
+                    <td><a href="{% url 'updateBook' book_id=loan.book.id %}" class="view-button">Update</a></td>
+                    <td>
+
+                    {% if loan.is_active %}
+
+                        <form action="" method="POST">
+                            {% csrf_token %}
+                            <input type="number" name="loan_id" value="{{loan.id}}" hidden />
+                            <button type="submit">Returned</button>
+                        </form>
+                        {% else %}
+                        <p>Already Returned</p>
+                    {% endif %}
+                    </tr>
+                </td>
+                {% endfor %}
+            </tbody>
+        </table>
+
+    {% include 'footer.html' %}
+</body>
+</html>
+

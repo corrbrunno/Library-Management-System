@@ -1,5 +1,6 @@
+from datetime import datetime
 from django.shortcuts import render,redirect
-from .models import Book
+from .models import Book, Member, BookLoan
 from django.db.models import Q
 
 
@@ -100,11 +101,67 @@ def searchBook(request):
             return render(request, 'bookList.html', context)
         else:
             context = {
-            'title': 'Book not found',
-            'message': 'Please enter a valid book title or author name.'
+                'title': 'Book not found',
+                'message': 'Please enter a valid book title or author name.'
             }
             return render(request, 'ErrorHandler.html', context)
     else:
         return render(request, 'search.html')
 
-  
+def addMember(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        identifier = request.POST.get('identifier')
+        member = Member(name=name, identifier=identifier)
+        member.save()
+
+        return render(request, "viewMember.html", member_id=member.id)
+    return render(request, "addMember.html")
+
+
+def borrowBook(request, book_id):
+    book = Book.objects.get(pk=book_id)
+
+    if request.method == 'POST':
+        identifier = request.POST.get('identifier')
+        borrowed = request.POST.get('borrowed')
+        member = Member.objects.filter(Q(identifier__icontains=identifier)).first()
+
+        if member == None:
+            context = {
+            'title': 'Member not found',
+            'message': 'Please enter a valid member identifier.'
+            }
+            return render(request, 'ErrorHandler.html', context)
+
+        book.copies = book.copies - int(borrowed)
+        book.save()
+        bookLoan = BookLoan(member=member, book=book, books_borrowed=borrowed)
+        bookLoan.save()
+        return render(request, "home.html")
+    
+    context = {'book_list': [book]}
+    return render(request, "borrowBook.html", context=context)
+
+def memberView(request, member_id):
+    if request.method == 'POST':
+        loan_id = request.POST.get('loan_id')
+        book_loan = BookLoan.objects.get(pk=loan_id)
+        
+        if book_loan.is_active:
+            book_loan.book.copies = book_loan.book.copies + book_loan.books_borrowed
+            book_loan.returned_date = datetime.now()
+            book_loan.save()
+            book_loan.book.save()
+
+    member = Member.objects.get(pk=member_id)
+    borrowed_books = BookLoan.objects.filter(Q(member=member))
+    context = context = {
+        'member': member, 
+        'member_loans': borrowed_books
+    }
+    return render(request, "viewMember.html", context)
+    
+def memberList(request):
+    context = {'member_list': Member.objects.all()}
+    return render(request, "memberList.html", context)

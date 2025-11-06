@@ -22,6 +22,8 @@
                 <p><strong>Number of Copies:</strong> {{ book.copies }}</p>
             </div>
             <a href="{% url 'home' %}" class="home-button">Go Home</a>
+            <a href="{% url 'borrow' book_id=book.id %}" class="home-button">Borrow</a>
+            <a href="{% url 'updateBook' book_id=book.id %}" class="home-button">Update</a>
         </div>
     </div>
 

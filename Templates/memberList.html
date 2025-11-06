@@ -14,17 +14,18 @@
         <table>
             <thead>
                 <tr>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Genre</th>
+                    <th>name</th>
+                    <th>Identifier</th>
                     <th>View</th>
-                    <th>Update</th>
-                    <th>Borrow</th>
                 </tr>
             </thead>
             <tbody>
-                {% for book in book_list %}
-git 
+                {% for member in member_list %}
+                <tr>
+                    <td>{{ member.name }}</td>
+                    <td>{{ member.identifier }}</td>
+                    <td><a href="{% url 'viewMember' member_id=member.id %}" class="view-button">View</a></td>
+                </tr>
                 {% endfor %}
             </tbody>
         </table>

@@ -26,6 +26,12 @@
     </section>
 
     <section class="section">
+        <h2>Add Member</h2>
+        <p>Add a new Member to the library System.</p>
+        <a href="{% url 'addMember' %}" class="action-button">Add Book</a>
+    </section>
+
+    <section class="section">
         <h2>Delete Book</h2>
         <p>Delete an existing book from the library.</p>
         <a href="{% url 'deleteBook' %}" class="action-button">Delete Book</a>
@@ -41,6 +47,12 @@
         <h2>View a Book</h2>
         <p>View detailed information about a specific book.</p>
         <a href="{% url 'searchBook' %}" class="action-button">View Book</a>
+    </section>
+
+    <section class="section">
+        <h2>View List of Members</h2>
+        <p>View all members in the system library.</p>
+        <a href="{% url 'viewMemberList' %}" class="action-button">View Members</a>
     </section>
 
     {% include 'footer.html' %}
